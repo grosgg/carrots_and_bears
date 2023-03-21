@@ -1,0 +1,143 @@
+[gd_scene load_steps=10 format=3 uid="uid://2lgx12gnl2jr"]
+
+[ext_resource type="Texture2D" uid="uid://chsgos1n2ga8o" path="res://art/animals tileset.png" id="1_ejpm3"]
+[ext_resource type="Script" path="res://scripts/bear.gd" id="1_tlbj1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7r0sd"]
+size = Vector2(14, 6)
+
+[sub_resource type="Animation" id="Animation_qili0"]
+resource_name = "idle"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+
+[sub_resource type="Animation" id="Animation_0ejxp"]
+resource_name = "attack"
+length = 0.3
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(2.08165e-12, -1), Vector2(2.08165e-12, 2.08165e-12)]
+}
+
+[sub_resource type="Animation" id="Animation_xx5x0"]
+resource_name = "walk"
+length = 0.5
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(2.08165e-12, -1), Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3iah1"]
+_data = {
+"idle": SubResource("Animation_qili0"),
+"rage": SubResource("Animation_0ejxp"),
+"walk": SubResource("Animation_xx5x0")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lrde0"]
+radius = 11.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1ldcr"]
+radius = 56.0
+
+[node name="Bear" type="CharacterBody2D"]
+script = ExtResource("1_tlbj1")
+rage_speed = 35.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(2.08165e-12, -1)
+texture = ExtResource("1_ejpm3")
+hframes = 2
+vframes = 2
+frame = 3
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+shape = SubResource("RectangleShape2D_7r0sd")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_3iah1")
+}
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="DamageArea" type="StaticBody2D" parent="." groups=["bears"]]
+collision_layer = 4
+collision_mask = 2
+
+[node name="DamageCollision" type="CollisionShape2D" parent="DamageArea"]
+shape = SubResource("CircleShape2D_lrde0")
+debug_color = Color(0.980392, 0.109804, 0.211765, 0.419608)
+
+[node name="DetectionArea" type="Area2D" parent="."]
+position = Vector2(0, 3)
+collision_layer = 4
+collision_mask = 2
+
+[node name="DetectionCollision" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource("CircleShape2D_1ldcr")
+debug_color = Color(0.720156, 0.479751, 2.97919e-07, 0.42)
+
+[node name="PauseTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
+[connection signal="timeout" from="PauseTimer" to="." method="_on_pause_timer_timeout"]

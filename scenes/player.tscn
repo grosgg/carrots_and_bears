@@ -1,0 +1,143 @@
+[gd_scene load_steps=13 format=3 uid="uid://cmm82mj0jdnr3"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_565nl"]
+[ext_resource type="Texture2D" uid="uid://cjs350bct0cj7" path="res://art/carrot.png" id="2_8qon0"]
+[ext_resource type="Texture2D" uid="uid://dxfor0rds3bus" path="res://art/hero tileset.png" id="2_o3j6f"]
+[ext_resource type="AudioStream" uid="uid://bebg1wjeflfie" path="res://sounds/hitHurt.wav" id="4_68l3o"]
+[ext_resource type="AudioStream" uid="uid://mjn4dltci3vx" path="res://sounds/pickupCoin.wav" id="5_28wxw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4po48"]
+size = Vector2(14, 6)
+
+[sub_resource type="Animation" id="Animation_lba51"]
+resource_name = "idle"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Character:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_otcw4"]
+resource_name = "lift"
+length = 1.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Character:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+
+[sub_resource type="Animation" id="Animation_f1rj0"]
+resource_name = "walk"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Character:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [1, 2, 1, 2]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Character:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(2.08165e-12, -1), Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_07mne"]
+_data = {
+"idle": SubResource("Animation_lba51"),
+"lift": SubResource("Animation_otcw4"),
+"walk": SubResource("Animation_f1rj0")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_unm28"]
+radius = 6.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wah4n"]
+radius = 56.0
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+collision_layer = 3
+script = ExtResource("1_565nl")
+
+[node name="LiftedCarrot" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(2.08165e-12, -14)
+scale = Vector2(1, 0.99975)
+texture = ExtResource("2_8qon0")
+region_rect = Rect2(544, 320, 16, 16)
+
+[node name="Character" type="Sprite2D" parent="."]
+position = Vector2(2.08165e-12, -1)
+texture = ExtResource("2_o3j6f")
+offset = Vector2(2.08165e-12, 2.08165e-12)
+hframes = 2
+vframes = 2
+region_rect = Rect2(402, 17, 13.1665, 14.2559)
+
+[node name="PhysicalCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+shape = SubResource("RectangleShape2D_4po48")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_07mne")
+}
+
+[node name="ActionableArea" type="Area2D" parent="."]
+visible = false
+collision_layer = 0
+collision_mask = 12
+
+[node name="ActionableCollision" type="CollisionShape2D" parent="ActionableArea"]
+position = Vector2(2.08165e-12, 5)
+shape = SubResource("CircleShape2D_unm28")
+debug_color = Color(0.588235, 0.54902, 0, 0.419608)
+
+[node name="DetectionArea" type="Area2D" parent="."]
+position = Vector2(0, 3)
+collision_layer = 0
+collision_mask = 4
+
+[node name="DetectionCollision" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource("CircleShape2D_wah4n")
+debug_color = Color(0.720156, 0.479751, 2.97919e-07, 0.42)
+
+[node name="HurtSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_68l3o")
+
+[node name="PickSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_28wxw")
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
+[connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]
+[connection signal="body_entered" from="ActionableArea" to="." method="_on_actionable_area_body_entered"]
+[connection signal="body_exited" from="ActionableArea" to="." method="_on_actionable_area_body_exited"]
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

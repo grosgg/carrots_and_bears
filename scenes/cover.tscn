@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://ctp73js0x8b2w"]
+
+[ext_resource type="Theme" uid="uid://rbt4kjtnhrdu" path="res://themes/simple_theme.tres" id="1_evxfv"]
+[ext_resource type="Texture2D" uid="uid://dxfor0rds3bus" path="res://art/hero tileset.png" id="2_crdnm"]
+[ext_resource type="Texture2D" uid="uid://cjs350bct0cj7" path="res://art/carrot.png" id="3_b84h3"]
+[ext_resource type="Texture2D" uid="uid://chsgos1n2ga8o" path="res://art/animals tileset.png" id="4_7mfrb"]
+
+[node name="Cover" type="Node2D"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(630, 500)
+offset_right = 552.0
+offset_bottom = 192.0
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="."]
+offset_left = 112.0
+offset_top = 96.0
+offset_right = 526.0
+offset_bottom = 160.0
+theme = ExtResource("1_evxfv")
+theme_override_font_sizes/font_size = 60
+text = "Carrots & Bears"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(320, 368)
+scale = Vector2(8, 8)
+texture = ExtResource("2_crdnm")
+region_enabled = true
+region_rect = Rect2(16, 16, 16, 16)
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+position = Vector2(320, 256)
+scale = Vector2(8, 8)
+texture = ExtResource("3_b84h3")
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+position = Vector2(80, 392)
+rotation = 0.275762
+scale = Vector2(16, 16)
+texture = ExtResource("4_7mfrb")
+region_enabled = true
+region_rect = Rect2(0, 16, 16, 16)
+
+[node name="Sprite2D4" type="Sprite2D" parent="."]
+position = Vector2(536, 488)
+rotation = -0.18326
+scale = Vector2(16, 16)
+texture = ExtResource("4_7mfrb")
+region_enabled = true
+region_rect = Rect2(16, 16, 16, 16)

@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://cwqqwpdfen4kr"]
+
+[ext_resource type="Script" path="res://scripts/jiji.gd" id="1_a8e5b"]
+[ext_resource type="Texture2D" uid="uid://brn46dxv1awwk" path="res://art/monochrome-transparent_packed.png" id="1_n7gmd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_orh21"]
+size = Vector2(13, 18)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_plohe"]
+
+[node name="Jiji" type="StaticBody2D" groups=["jiji"]]
+collision_layer = 5
+script = ExtResource("1_a8e5b")
+
+[node name="PhysicalCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_orh21")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_n7gmd")
+region_enabled = true
+region_rect = Rect2(400, 64, 16, 16)
+
+[node name="DialogArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="DialogCollision" type="CollisionShape2D" parent="DialogArea"]
+position = Vector2(0, 3)
+shape = SubResource("CircleShape2D_plohe")
+debug_color = Color(0.686275, 0.498039, 0, 0.419608)
